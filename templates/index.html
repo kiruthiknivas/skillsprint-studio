@@ -1,0 +1,610 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>SkillSprint Studio // Precision Interview & Career Suite</title>
+    <!-- Tailwind CSS CDN -->
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script>
+        tailwind.config = {
+            darkMode: 'class',
+            theme: {
+                extend: {
+                    colors: {
+                        obsidian: '#07090e',
+                        surface: '#0e121d',
+                        surfaceElevated: '#141a29',
+                        emeraldAccent: '#10b981',
+                        blueAccent: '#3b82f6',
+                        amberAccent: '#f59e0b'
+                    },
+                    fontFamily: {
+                        sans: ['"Plus Jakarta Sans"', '-apple-system', 'BlinkMacSystemFont', 'Segoe UI', 'Roboto', 'sans-serif'],
+                        mono: ['"JetBrains Mono"', 'monospace']
+                    }
+                }
+            }
+        }
+    </script>
+    <!-- FontAwesome 6 Icons -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+    <!-- Canvas Confetti -->
+    <script src="https://cdn.jsdelivr.net/npm/canvas-confetti@1.6.0/dist/confetti.browser.min.js"></script>
+    <!-- Custom Design System Stylesheet -->
+    <link rel="stylesheet" href="/static/css/styles.css">
+</head>
+<body class="min-h-full flex flex-col font-sans antialiased text-slate-100 selection:bg-emerald-500/30 selection:text-emerald-200">
+
+    <!-- Top Minimalist Studio Header -->
+    <header class="sticky top-0 z-40 backdrop-blur-xl bg-[#07090e]/85 border-b border-white/[0.06]">
+        <div class="max-w-6xl mx-auto px-4 sm:px-6 h-16 flex items-center justify-between gap-3">
+            <!-- Brand Logo -->
+            <div class="flex items-center space-x-2.5 cursor-pointer group" onclick="switchMajorTab('resume-learning')">
+                <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400 group-hover:scale-105 transition-transform duration-200">
+                    <i class="fa-solid fa-terminal text-xs"></i>
+                </div>
+                <div class="flex items-center gap-1.5">
+                    <span class="text-sm font-extrabold tracking-tight text-white uppercase">SkillSprint</span>
+                    <span class="text-[10px] font-mono px-1.5 py-0.5 rounded bg-white/[0.04] text-slate-400 border border-white/[0.06]">STUDIO</span>
+                </div>
+            </div>
+
+            <!-- THE THREE MAJOR ACTION TABS (Clean Studio Controller) -->
+            <nav class="hidden md:flex studio-nav-container">
+                <button type="button" onclick="switchMajorTab('resume-learning')" id="mainTabBtn-resume" class="studio-tab-btn active">
+                    <span class="w-1.5 h-1.5 rounded-full tab-indicator-dot transition-all"></span>
+                    <span>01 // Resume Interview</span>
+                </button>
+                <button type="button" onclick="switchMajorTab('jd-learning')" id="mainTabBtn-jd" class="studio-tab-btn">
+                    <span class="w-1.5 h-1.5 rounded-full tab-indicator-dot transition-all"></span>
+                    <span>02 // Target Company & JD</span>
+                </button>
+                <button type="button" onclick="switchMajorTab('ats-score')" id="mainTabBtn-ats" class="studio-tab-btn">
+                    <span class="w-1.5 h-1.5 rounded-full tab-indicator-dot transition-all"></span>
+                    <span>03 // ATS Resume Audit</span>
+                </button>
+            </nav>
+
+            <!-- Right Controls: Admin (Strictly Isolated), Setup Guide, Auth -->
+            <div class="flex items-center space-x-2">
+                <!-- Admin Database Button: STRICTLY HIDDEN UNLESS USER IS kiruthiknivasnkl@gmail.com -->
+                <button type="button" id="admin-nav-btn" onclick="openAdminModal()" 
+                    class="hidden text-xs px-2.5 py-1.5 rounded-xl bg-amber-500/10 hover:bg-amber-500/20 border border-amber-500/30 text-amber-300 transition items-center gap-1.5 font-medium shadow-sm" title="Restricted Admin Database">
+                    <i class="fa-solid fa-shield-halved text-[11px] text-amber-400"></i>
+                    <span class="hidden sm:inline">Admin DB</span>
+                </button>
+
+                <!-- Cloud & Email Setup Guide -->
+                <button type="button" onclick="openSetupGuideModal()" 
+                    class="text-xs px-2.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 hover:text-white transition flex items-center gap-1.5 font-medium">
+                    <i class="fa-solid fa-sliders text-slate-400 text-[11px]"></i>
+                    <span class="hidden sm:inline">Setup Guide</span>
+                </button>
+
+                <!-- User Account / Auth Profile -->
+                <div id="authHeaderControl">
+                    <button type="button" onclick="openAuthModal('login')" 
+                        class="text-xs px-3.5 py-1.5 rounded-xl bg-emerald-600 hover:bg-emerald-500 text-white font-semibold transition shadow-sm shadow-emerald-500/20 flex items-center gap-1.5">
+                        <i class="fa-solid fa-user text-[11px]"></i>
+                        <span id="userBtnLabel">Sign In</span>
+                    </button>
+                </div>
+            </div>
+        </div>
+
+        <!-- Mobile Navigation Tabs -->
+        <div class="md:hidden flex border-t border-white/[0.06] px-3 py-2 bg-[#07090e] overflow-x-auto text-xs space-x-1.5">
+            <button type="button" onclick="switchMajorTab('resume-learning')" id="mobTabBtn-resume" class="flex-1 py-1.5 px-3 rounded-lg bg-emerald-500/15 border border-emerald-500/30 text-emerald-300 font-semibold text-center whitespace-nowrap">
+                01. Resume Hub
+            </button>
+            <button type="button" onclick="switchMajorTab('jd-learning')" id="mobTabBtn-jd" class="flex-1 py-1.5 px-3 rounded-lg text-slate-400 hover:text-white font-medium text-center whitespace-nowrap">
+                02. Target JD
+            </button>
+            <button type="button" onclick="switchMajorTab('ats-score')" id="mobTabBtn-ats" class="flex-1 py-1.5 px-3 rounded-lg text-slate-400 hover:text-white font-medium text-center whitespace-nowrap">
+                03. ATS Audit
+            </button>
+        </div>
+    </header>
+
+    <!-- Main Studio Workspace Container -->
+    <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-6 sm:py-8">
+
+        <!-- ======================================================== -->
+        <!-- TAB 1: RESUME INTERVIEW (MCQ + CODING + BEHAVIORAL)      -->
+        <!-- ======================================================== -->
+        <section id="tab-resume-learning" class="action-tab space-y-6">
+            <!-- Setup Form Card (Hidden during active session) -->
+            <div id="resumeQuizSetupCard" class="studio-card p-6 sm:p-8 space-y-6">
+                <!-- Tab Header -->
+                <div class="border-b border-white/[0.06] pb-5">
+                    <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 tracking-wider uppercase mb-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        Module 01 // Adaptive Technical & Behavioral Simulation
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Technical Assessment & Hiring Readiness</h1>
+                    <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+                        Upload your resume to generate a personalized evaluation combining technical architecture gotchas (.NET, Angular, SQL), hands-on coding challenges, and hiring fit questions with real-time AI coaching.
+                    </p>
+                </div>
+
+                <form onsubmit="handleResumeQuizStart(event)" class="space-y-6">
+                    <!-- Clean Split Layout: Left Dropzone, Right Configurator -->
+                    <div class="grid grid-cols-1 lg:grid-cols-12 gap-5">
+                        <!-- Left Column: Universal Dropzone (7 Cols) -->
+                        <div class="lg:col-span-7 space-y-3">
+                            <div class="flex items-center justify-between">
+                                <label class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-cloud-arrow-up text-emerald-400"></i> Resume Document
+                                </label>
+                                <button type="button" onclick="loadSampleResume('tab1')" class="text-[11px] font-mono text-emerald-400 hover:text-emerald-300 font-medium transition">
+                                    ⚡ Load 2-Yr Sample Resume
+                                </button>
+                            </div>
+
+                            <div id="dropZone-tab1" class="studio-dropzone p-6 text-center" onclick="document.getElementById('fileInput-tab1').click()">
+                                <input type="file" id="fileInput-tab1" accept=".pdf,.docx,.doc,.txt" class="hidden" onchange="handleFileSelect('tab1', event)">
+                                <div class="w-12 h-12 mx-auto rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-400 text-lg mb-3">
+                                    <i class="fa-solid fa-file-code"></i>
+                                </div>
+                                <div class="text-xs font-semibold text-white" id="fileTitle-tab1">
+                                    Drop your resume file here or click to browse
+                                </div>
+                                <div class="text-[11px] text-slate-500 mt-1 font-mono">
+                                    Supports PDF, Word (.docx), or plain text (.txt)
+                                </div>
+                                <div id="fileBadge-tab1" class="hidden mt-3 inline-flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/25 font-mono">
+                                    <i class="fa-solid fa-circle-check"></i>
+                                    <span id="fileNameDisplay-tab1">resume.pdf</span>
+                                </div>
+                            </div>
+
+                            <!-- Extracted Skills Detection Tags -->
+                            <div id="extractedSkillsContainer-tab1" class="hidden p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] text-xs">
+                                <div class="text-[11px] font-mono text-slate-400 uppercase tracking-wider mb-2 flex items-center gap-1.5">
+                                    <i class="fa-solid fa-wand-magic-sparkles text-emerald-400"></i> Auto-Detected Core Skills:
+                                </div>
+                                <div id="extractedSkillsBadges-tab1" class="flex flex-wrap gap-1.5"></div>
+                            </div>
+                        </div>
+
+                        <!-- Right Column: Candidate Parameters (5 Cols) -->
+                        <div class="lg:col-span-5 space-y-3.5 bg-white/[0.015] p-5 rounded-2xl border border-white/[0.06]">
+                            <div>
+                                <label class="block text-xs font-medium text-slate-300 mb-1">Candidate Full Name</label>
+                                <input type="text" id="resumeUserName" required placeholder="e.g. Kiruthik Nivas"
+                                    class="w-full px-3.5 py-2 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+                            </div>
+                            <div class="grid grid-cols-2 gap-2.5">
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Primary Skill</label>
+                                    <input type="text" id="resumePrimarySkill" required placeholder=".NET Core / C#"
+                                        class="w-full px-3 py-2 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+                                </div>
+                                <div>
+                                    <label class="block text-xs font-medium text-slate-300 mb-1">Secondary Skill</label>
+                                    <input type="text" id="resumeSecondarySkill" required placeholder="Angular & SQL"
+                                        class="w-full px-3 py-2 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-xs font-medium text-slate-400 mb-1.5">Difficulty Calibration</label>
+                                <div class="grid grid-cols-3 gap-1.5">
+                                    <button type="button" onclick="setResumeDiff('Beginner')" class="studio-pill text-xs" data-diff="Beginner">Beginner</button>
+                                    <button type="button" onclick="setResumeDiff('Intermediate')" class="studio-pill active text-xs" data-diff="Intermediate">Intermediate</button>
+                                    <button type="button" onclick="setResumeDiff('Harder')" class="studio-pill text-xs" data-diff="Harder">Harder</button>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Dynamic Session Format & Length Selector -->
+                    <div class="p-4 sm:p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-4">
+                        <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-3 border-b border-white/[0.06] pb-3">
+                            <div>
+                                <div class="text-xs font-bold text-white uppercase tracking-wider font-mono">Assessment Scope & Length</div>
+                                <div class="text-[11px] text-slate-400 mt-0.5">Dynamic non-repeating question allocation based on your background</div>
+                            </div>
+                            <!-- Dynamic Question Count Selector (No longer fixed at 30!) -->
+                            <div class="flex items-center gap-1.5">
+                                <button type="button" onclick="setQuestionCount(10)" class="studio-pill active text-xs font-mono" data-qcount="10">10 Questions (Sprint)</button>
+                                <button type="button" onclick="setQuestionCount(20)" class="studio-pill text-xs font-mono" data-qcount="20">20 Questions (Standard)</button>
+                                <button type="button" onclick="setQuestionCount(30)" class="studio-pill text-xs font-mono" data-qcount="30">30 Questions (Deep Dive)</button>
+                            </div>
+                        </div>
+
+                        <!-- Included Interview Modules Toggles -->
+                        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
+                            <label class="flex items-center gap-2.5 p-3 rounded-xl bg-[#090c15] border border-white/[0.06] cursor-pointer hover:border-white/[0.15] transition">
+                                <input type="checkbox" id="modToggleMcq" checked disabled class="accent-emerald-500 rounded">
+                                <div class="text-xs">
+                                    <div class="font-semibold text-white">Technical MCQs</div>
+                                    <div class="text-[10px] text-slate-400">Architecture, runtime mechanics, gotchas</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-2.5 p-3 rounded-xl bg-[#090c15] border border-white/[0.06] cursor-pointer hover:border-white/[0.15] transition">
+                                <input type="checkbox" id="modToggleCoding" checked class="accent-emerald-500 rounded">
+                                <div class="text-xs">
+                                    <div class="font-semibold text-white">Practical Coding</div>
+                                    <div class="text-[10px] text-slate-400">Real challenges with test cases & code editor</div>
+                                </div>
+                            </label>
+                            <label class="flex items-center gap-2.5 p-3 rounded-xl bg-[#090c15] border border-white/[0.06] cursor-pointer hover:border-white/[0.15] transition">
+                                <input type="checkbox" id="modToggleBehavioral" checked class="accent-emerald-500 rounded">
+                                <div class="text-xs">
+                                    <div class="font-semibold text-white">Hiring & Behavioral Fit</div>
+                                    <div class="text-[10px] text-slate-400">'Why Hire You' & STAR scenario coaching</div>
+                                </div>
+                            </label>
+                        </div>
+                    </div>
+
+                    <!-- Action Button -->
+                    <div class="flex items-center justify-between pt-2">
+                        <div class="text-[11px] text-slate-500 font-mono hidden sm:block">
+                            <i class="fa-solid fa-lock text-[10px] text-emerald-400 mr-1"></i> Data saved securely to Supabase PostgreSQL
+                        </div>
+                        <button type="submit" id="startResumeQuizBtn" class="btn-primary-action w-full sm:w-auto">
+                            <span>Launch Interview Session</span>
+                            <i class="fa-solid fa-arrow-right text-xs"></i>
+                        </button>
+                    </div>
+                </form>
+            </div>
+
+            <!-- Quiz Arena (Dynamically rendered during active session) -->
+            <div id="quizArenaContainer" class="hidden space-y-6"></div>
+
+            <!-- Assessment Results Screen (Rendered upon submission) -->
+            <div id="quizResultsContainer" class="hidden space-y-6"></div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- TAB 2: LEARN FROM TARGET COMPANY & JOB DESCRIPTION       -->
+        <!-- ======================================================== -->
+        <section id="tab-jd-learning" class="action-tab hidden space-y-6">
+            <div id="jdSetupCard" class="studio-card p-6 sm:p-8 space-y-6">
+                <!-- Tab Header -->
+                <div class="border-b border-white/[0.06] pb-5">
+                    <div class="flex items-center gap-2 text-xs font-mono text-blue-400 tracking-wider uppercase mb-1">
+                        <span class="w-2 h-2 rounded-full bg-blue-400 animate-pulse"></span>
+                        Module 02 // Company-Targeted Interview Simulation
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Enterprise & Job-Specific Assessment</h1>
+                    <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+                        Input your target company and job description. SkillSprint will simulate their exact interview patterns (technical rounds, coding questions, and company cultural principles) or generate a tailored multi-week preparation roadmap.
+                    </p>
+                </div>
+
+                <div class="space-y-5">
+                    <!-- Company & Role Selection -->
+                    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Target Company</label>
+                            <input type="text" id="targetCompanyName" placeholder="e.g. Microsoft, Google, Amazon, Startup"
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
+                            <!-- Quick Select Company Chips -->
+                            <div class="flex flex-wrap gap-1.5 mt-2">
+                                <button type="button" onclick="setCompanyQuick('Microsoft')" class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.04] text-slate-400 hover:text-white border border-white/[0.06]">Microsoft</button>
+                                <button type="button" onclick="setCompanyQuick('Google')" class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.04] text-slate-400 hover:text-white border border-white/[0.06]">Google</button>
+                                <button type="button" onclick="setCompanyQuick('Amazon')" class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.04] text-slate-400 hover:text-white border border-white/[0.06]">Amazon</button>
+                                <button type="button" onclick="setCompanyQuick('FinTech Startup')" class="text-[10px] font-mono px-2 py-0.5 rounded bg-white/[0.04] text-slate-400 hover:text-white border border-white/[0.06]">FinTech</button>
+                            </div>
+                        </div>
+                        <div>
+                            <label class="block text-xs font-medium text-slate-300 mb-1.5">Target Job Title</label>
+                            <input type="text" id="targetJobTitle" placeholder="e.g. Senior Full Stack .NET & Angular Developer"
+                                class="w-full px-3.5 py-2.5 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 transition">
+                        </div>
+                    </div>
+
+                    <!-- Job Description Input: Dropzone or Paste -->
+                    <div>
+                        <div class="flex items-center justify-between mb-1.5">
+                            <label class="text-xs font-semibold text-slate-200 flex items-center gap-1.5">
+                                <i class="fa-solid fa-briefcase text-blue-400"></i> Job Description (Paste or Upload)
+                            </label>
+                            <button type="button" onclick="loadSampleJD()" class="text-[11px] font-mono text-blue-400 hover:text-blue-300">
+                                ⚡ Load Sample Full Stack JD
+                            </button>
+                        </div>
+                        <textarea id="targetJobDescription" rows="5" placeholder="Paste the job requirements, responsibilities, and qualifications here..."
+                            class="w-full p-4 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-blue-500 font-mono transition resize-y"></textarea>
+                    </div>
+
+                    <!-- Resume Status Banner -->
+                    <div id="jdResumeStatusBanner" class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06] flex items-center justify-between">
+                        <div class="flex items-center gap-2 text-xs">
+                            <i class="fa-solid fa-file-check text-emerald-400"></i>
+                            <span class="text-slate-300" id="jdResumeStatusText">No resume loaded yet. You can upload one in Tab 1 or click here:</span>
+                        </div>
+                        <button type="button" onclick="document.getElementById('fileInput-tab1').click()" class="text-[11px] font-mono text-emerald-400 hover:underline">
+                            Upload Resume
+                        </button>
+                    </div>
+
+                    <!-- Dual Action Buttons -->
+                    <div class="flex flex-col sm:flex-row items-center gap-3 pt-2">
+                        <button type="button" onclick="handleCompanyQuizStart()" id="companyQuizStartBtn" 
+                            class="w-full sm:flex-1 py-3 px-5 rounded-xl bg-blue-600 hover:bg-blue-500 text-white font-semibold text-xs transition shadow-md shadow-blue-500/20 flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-play text-[11px]"></i>
+                            <span>Simulate Company Interview (MCQ + Code + Culture)</span>
+                        </button>
+                        <button type="button" onclick="handleGenerateRoadmap()" id="roadmapStartBtn" 
+                            class="w-full sm:w-auto py-3 px-5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-slate-200 hover:text-white font-semibold text-xs transition flex items-center justify-center gap-2">
+                            <i class="fa-solid fa-route text-amber-400 text-[11px]"></i>
+                            <span>Generate 4-Week Prep Plan</span>
+                        </button>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Company Quiz & Roadmap Result Display Container -->
+            <div id="companyAssessmentOutput" class="hidden space-y-6"></div>
+        </section>
+
+        <!-- ======================================================== -->
+        <!-- TAB 3: CHECK ATS SCORE & RESUME HEALTH                   -->
+        <!-- ======================================================== -->
+        <section id="tab-ats-score" class="action-tab hidden space-y-6">
+            <div id="atsSetupCard" class="studio-card p-6 sm:p-8 space-y-6">
+                <!-- Tab Header -->
+                <div class="border-b border-white/[0.06] pb-5">
+                    <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 tracking-wider uppercase mb-1">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                        Module 03 // Precision ATS Scoring & Bullet Enhancer
+                    </div>
+                    <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Applicant Tracking System (ATS) Diagnostic</h1>
+                    <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
+                        Assess keyword density, experience impact metrics, and formatting compliance. Receive Google XYZ formula bullet point rewrites to rank in the top 5% of candidate screens.
+                    </p>
+                </div>
+
+                <div class="space-y-5">
+                    <!-- Dropzone for ATS Resume -->
+                    <div>
+                        <label class="block text-xs font-semibold text-slate-200 mb-2">Resume File to Audit</label>
+                        <div id="dropZone-tab3" class="studio-dropzone p-6 text-center" onclick="document.getElementById('fileInput-tab3').click()">
+                            <input type="file" id="fileInput-tab3" accept=".pdf,.docx,.doc,.txt" class="hidden" onchange="handleFileSelect('tab3', event)">
+                            <div class="w-12 h-12 mx-auto rounded-xl bg-white/[0.03] border border-white/[0.08] flex items-center justify-center text-slate-400 text-lg mb-3">
+                                <i class="fa-solid fa-file-magnifying-glass"></i>
+                            </div>
+                            <div class="text-xs font-semibold text-white" id="fileTitle-tab3">
+                                Drop your resume file here or click to browse
+                            </div>
+                            <div class="text-[11px] text-slate-500 mt-1 font-mono">Supports PDF, DOCX, or TXT</div>
+                            <div id="fileBadge-tab3" class="hidden mt-3 inline-flex items-center gap-1.5 text-xs text-emerald-400 bg-emerald-500/10 px-3 py-1 rounded-full border border-emerald-500/25 font-mono">
+                                <i class="fa-solid fa-circle-check"></i>
+                                <span id="fileNameDisplay-tab3">resume.pdf</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- Target Role for Matching -->
+                    <div>
+                        <label class="block text-xs font-medium text-slate-300 mb-1">Target Role or Key Specialization</label>
+                        <input type="text" id="atsTargetRole" placeholder="e.g. Senior Full Stack .NET Developer"
+                            class="w-full px-3.5 py-2.5 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+                    </div>
+
+                    <!-- Run Audit Button -->
+                    <button type="button" onclick="handleRunAtsAudit()" id="runAtsBtn" class="btn-primary-action w-full sm:w-auto">
+                        <i class="fa-solid fa-chart-simple text-xs"></i>
+                        <span>Run Full ATS Diagnostic</span>
+                    </button>
+                </div>
+            </div>
+
+            <!-- ATS Report Container -->
+            <div id="atsReportContainer" class="hidden space-y-6"></div>
+        </section>
+
+    </main>
+
+    <!-- ======================================================== -->
+    <!-- RESTRICTED ADMIN DATABASE MODAL (ONLY FOR OWNER)         -->
+    <!-- ======================================================== -->
+    <div id="adminModal" class="fixed inset-0 z-50 hidden studio-modal-backdrop flex items-center justify-center p-4">
+        <div class="studio-modal-panel w-full max-w-4xl max-h-[90vh] flex flex-col p-6 space-y-5 animate-scaleUp">
+            <div class="flex items-center justify-between border-b border-white/[0.08] pb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-amber-500/10 border border-amber-500/30 flex items-center justify-center text-amber-400">
+                        <i class="fa-solid fa-shield-halved text-xs"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-white tracking-tight">Administrator Database Portal</h2>
+                        <div class="text-[11px] font-mono text-slate-400" id="adminDbProviderLabel">Connected to Supabase PostgreSQL</div>
+                    </div>
+                </div>
+                <button type="button" onclick="closeAdminModal()" class="w-8 h-8 rounded-lg bg-white/[0.04] text-slate-400 hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Admin Overview Metrics -->
+            <div class="grid grid-cols-2 sm:grid-cols-4 gap-3">
+                <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                    <div class="text-[10px] font-mono text-slate-400 uppercase">Total Users</div>
+                    <div class="text-xl font-bold text-white mt-0.5" id="adminStatUsers">0</div>
+                </div>
+                <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                    <div class="text-[10px] font-mono text-slate-400 uppercase">Verified Accounts</div>
+                    <div class="text-xl font-bold text-emerald-400 mt-0.5" id="adminStatVerified">0</div>
+                </div>
+                <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                    <div class="text-[10px] font-mono text-slate-400 uppercase">Assessments Taken</div>
+                    <div class="text-xl font-bold text-blue-400 mt-0.5" id="adminStatQuizzes">0</div>
+                </div>
+                <div class="p-3.5 rounded-xl bg-white/[0.02] border border-white/[0.06]">
+                    <div class="text-[10px] font-mono text-slate-400 uppercase">ATS Audits</div>
+                    <div class="text-xl font-bold text-purple-400 mt-0.5" id="adminStatAts">0</div>
+                </div>
+            </div>
+
+            <!-- Database Records Tabs & Table -->
+            <div class="flex-1 overflow-y-auto space-y-3">
+                <div class="flex items-center justify-between border-b border-white/[0.06] pb-2 text-xs font-mono">
+                    <span class="text-slate-300 uppercase font-semibold">Registered Candidate Directory</span>
+                    <button type="button" onclick="loadAdminOverview()" class="text-emerald-400 hover:underline">
+                        <i class="fa-solid fa-arrows-rotate mr-1"></i> Refresh Data
+                    </button>
+                </div>
+                <div class="overflow-x-auto rounded-xl border border-white/[0.06]">
+                    <table class="w-full text-left text-xs font-mono">
+                        <thead class="bg-white/[0.03] text-slate-400 border-b border-white/[0.06]">
+                            <tr>
+                                <th class="p-3">ID</th>
+                                <th class="p-3">Candidate</th>
+                                <th class="p-3">Email</th>
+                                <th class="p-3">Core Skills</th>
+                                <th class="p-3">Verified</th>
+                                <th class="p-3">Registered At</th>
+                            </tr>
+                        </thead>
+                        <tbody id="adminUsersTableBody" class="divide-y divide-white/[0.04] text-slate-300">
+                            <tr>
+                                <td colspan="6" class="p-4 text-center text-slate-500">Loading database records...</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- SETUP GUIDE MODAL (SUPABASE POSTGRESQL & GMAIL SMTP)    -->
+    <!-- ======================================================== -->
+    <div id="setupGuideModal" class="fixed inset-0 z-50 hidden studio-modal-backdrop flex items-center justify-center p-4">
+        <div class="studio-modal-panel w-full max-w-2xl max-h-[90vh] flex flex-col p-6 space-y-5 animate-scaleUp">
+            <div class="flex items-center justify-between border-b border-white/[0.08] pb-4">
+                <div class="flex items-center gap-2.5">
+                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
+                        <i class="fa-solid fa-sliders text-xs"></i>
+                    </div>
+                    <div>
+                        <h2 class="text-base font-bold text-white tracking-tight">Production Infrastructure Guide</h2>
+                        <div class="text-[11px] font-mono text-slate-400">Free Open-Source Cloud DB & Gmail SMTP Setup</div>
+                    </div>
+                </div>
+                <button type="button" onclick="closeSetupGuideModal()" class="w-8 h-8 rounded-lg bg-white/[0.04] text-slate-400 hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <div class="flex-1 overflow-y-auto space-y-4 text-xs text-slate-300 leading-relaxed font-sans">
+                <!-- Supabase Card -->
+                <div class="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-2">
+                    <div class="font-bold text-white text-sm flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
+                        1. Free Cloud Database (Supabase PostgreSQL)
+                    </div>
+                    <p class="text-slate-400">
+                        Your application is currently connected live to your <strong>Supabase Tokyo PostgreSQL instance</strong>:
+                    </p>
+                    <div class="p-2.5 rounded-lg bg-[#090c15] border border-white/[0.06] font-mono text-[11px] text-emerald-300 break-all">
+                        aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres
+                    </div>
+                    <p class="text-slate-400 text-[11px]">
+                        All candidate registrations, quiz scores, and ATS audits are stored permanently with automatic backups.
+                    </p>
+                </div>
+
+                <!-- Gmail SMTP Card -->
+                <div class="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-2">
+                    <div class="font-bold text-white text-sm flex items-center gap-2">
+                        <span class="w-2 h-2 rounded-full bg-blue-400"></span>
+                        2. Live Email Dispatch (Gmail SMTP)
+                    </div>
+                    <p class="text-slate-400">
+                        Verified active with <strong>kiruthiknivasnkl@gmail.com</strong>.
+                    </p>
+                    <p class="text-slate-400 text-[11px]">
+                        Whenever users register, real 6-digit OTP codes are dispatched directly to their personal inbox with responsive HTML formatting.
+                    </p>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <!-- ======================================================== -->
+    <!-- AUTHENTICATION & OTP MODAL                               -->
+    <!-- ======================================================== -->
+    <div id="authModal" class="fixed inset-0 z-50 hidden studio-modal-backdrop flex items-center justify-center p-4">
+        <div class="studio-modal-panel w-full max-w-md p-6 space-y-5 animate-scaleUp">
+            <div class="flex items-center justify-between border-b border-white/[0.08] pb-3.5">
+                <div class="flex items-center gap-2">
+                    <i class="fa-solid fa-lock text-emerald-400 text-sm"></i>
+                    <h2 class="text-base font-bold text-white" id="authModalTitle">Sign In to SkillSprint</h2>
+                </div>
+                <button type="button" onclick="closeAuthModal()" class="w-8 h-8 rounded-lg bg-white/[0.04] text-slate-400 hover:text-white flex items-center justify-center">
+                    <i class="fa-solid fa-xmark text-sm"></i>
+                </button>
+            </div>
+
+            <!-- Step 1: Login Form -->
+            <form id="loginForm" onsubmit="handleLoginSubmit(event)" class="space-y-4">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Email Address</label>
+                    <input type="email" id="loginEmail" required placeholder="your.email@example.com"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Password</label>
+                    <input type="password" id="loginPassword" required placeholder="••••••••"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+                </div>
+                <button type="submit" class="btn-primary-action w-full py-2.5">Sign In</button>
+                <div class="text-center text-xs text-slate-400 pt-1">
+                    Don't have an account? <a href="#" onclick="toggleAuthForm('register')" class="text-emerald-400 hover:underline font-semibold">Create an Account</a>
+                </div>
+            </form>
+
+            <!-- Step 2: Register Form -->
+            <form id="registerForm" onsubmit="handleRegisterSubmit(event)" class="hidden space-y-3.5">
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Full Name</label>
+                    <input type="text" id="regName" required placeholder="e.g. John Doe"
+                        class="w-full px-3.5 py-2 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Email Address (OTP will be sent here)</label>
+                    <input type="email" id="regEmail" required placeholder="your.email@example.com"
+                        class="w-full px-3.5 py-2 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Password</label>
+                    <input type="password" id="regPassword" required placeholder="••••••••"
+                        class="w-full px-3.5 py-2 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+                </div>
+                <button type="submit" class="btn-primary-action w-full py-2.5">Send Verification Code</button>
+                <div class="text-center text-xs text-slate-400 pt-1">
+                    Already have an account? <a href="#" onclick="toggleAuthForm('login')" class="text-emerald-400 hover:underline font-semibold">Sign In</a>
+                </div>
+            </form>
+
+            <!-- Step 3: OTP Verification Form -->
+            <form id="otpVerifyForm" onsubmit="handleOtpSubmit(event)" class="hidden space-y-4">
+                <div class="text-center">
+                    <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-base mb-2">
+                        <i class="fa-solid fa-envelope-open-text"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-white">Enter Verification Code</h3>
+                    <p class="text-xs text-slate-400 mt-1">We sent a 6-digit verification code to <span id="otpTargetEmailDisplay" class="text-emerald-300 font-mono"></span></p>
+                </div>
+                <div>
+                    <input type="text" id="otpInput" maxlength="6" required placeholder="123456"
+                        class="w-full text-center text-2xl tracking-[8px] font-mono py-2.5 rounded-xl bg-[#090c15] border border-white/[0.12] text-white focus:outline-none focus:border-emerald-500 transition">
+                </div>
+                <button type="submit" class="btn-primary-action w-full py-2.5">Verify Account & Proceed</button>
+            </form>
+        </div>
+    </div>
+
+    <!-- Floating Notification Container -->
+    <div id="studioToastContainer"></div>
+
+    <!-- Application Logic Script -->
+    <script src="/static/js/app.js"></script>
+</body>
+</html>

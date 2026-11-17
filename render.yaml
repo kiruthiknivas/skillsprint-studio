@@ -5,7 +5,7 @@ services:
     region: singapore
     plan: free
     buildCommand: pip install -r requirements.txt
-    startCommand: gunicorn app:app --workers 2 --threads 4 --timeout 120
+    startCommand: gunicorn app:app --bind 0.0.0.0:$PORT --workers 2 --threads 4 --timeout 120
     envVars:
       - key: DATABASE_URL
         value: postgresql://postgres.gnjawtunpghmrsxkvcwx:Kiruthik%402002@aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres

@@ -103,25 +103,6 @@
     <!-- Main Studio Workspace Container -->
     <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-6 sm:py-8">
 
-        <!-- Platform Orientation Banner for New Users -->
-        <div class="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-500/[0.08] via-cyan-500/[0.04] to-transparent border border-white/[0.08] relative overflow-hidden">
-            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
-                <div>
-                    <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider mb-1">
-                        <i class="fa-solid fa-graduation-cap"></i> SkillSprint Studio — AI Interview & Career Operating System
-                    </div>
-                    <p class="text-xs text-slate-300 leading-relaxed max-w-3xl">
-                        Master technical hiring with 3 specialized tools: <strong>(1) Resume Hub</strong> simulates custom technical MCQs, coding challenges, and STAR behavioral answers; <strong>(2) Target JD</strong> tailors interview loops to specific company job postings; and <strong>(3) ATS Audit</strong> scans your resume against corporate filtering bots with Google X-Y-Z formula rewrites.
-                    </p>
-                </div>
-                <div class="flex items-center gap-2 whitespace-nowrap">
-                    <span class="text-[11px] font-mono text-slate-400 px-3 py-1 rounded-full bg-black/40 border border-white/[0.06]">
-                        <i class="fa-solid fa-bolt text-emerald-400 mr-1"></i> Free Open Platform
-                    </span>
-                </div>
-            </div>
-        </div>
-
         <!-- ======================================================== -->
         <!-- TAB 1: RESUME INTERVIEW (MCQ + CODING + BEHAVIORAL)      -->
         <!-- ======================================================== -->
@@ -129,24 +110,15 @@
             <!-- Setup Form Card (Hidden during active session) -->
             <div id="resumeQuizSetupCard" class="studio-card p-6 sm:p-8 space-y-6">
                 <!-- Tab Header -->
-                <div class="border-b border-white/[0.06] pb-5 space-y-3">
+                <div class="border-b border-white/[0.06] pb-5">
                     <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 tracking-wider uppercase mb-1">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         Module 01 // Adaptive Technical & Behavioral Simulation
                     </div>
                     <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Technical Assessment & Hiring Readiness</h1>
                     <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
-                        Upload your resume to generate a personalized evaluation combining technical architecture gotchas (.NET, Angular, SQL), hands-on coding challenges, and hiring fit questions with real-time AI coaching.
+                        Upload your resume to simulate dynamic technical MCQs, live coding challenges, and hiring fit questions with real-time AI coaching.
                     </p>
-                    
-                    <!-- Why use this feature guide box -->
-                    <div class="p-3 rounded-xl bg-emerald-500/[0.05] border border-emerald-500/20 text-xs text-slate-300 flex items-start gap-2.5">
-                        <i class="fa-solid fa-circle-question text-emerald-400 mt-0.5 text-sm shrink-0"></i>
-                        <div>
-                            <strong class="text-emerald-300 font-semibold">Why use this feature?</strong>
-                            <span class="text-slate-300">Upload your resume to receive a personalized, dynamic interview simulation. Learn immediately with on-the-spot conceptual explanations for every question, test your logic in a live coding sandbox with hidden edge cases, and refine your leadership stories using the STAR metric framework.</span>
-                        </div>
-                    </div>
                 </div>
 
                 <form onsubmit="handleResumeQuizStart(event)" class="space-y-6">
@@ -293,17 +265,8 @@
                     </div>
                     <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Enterprise & Job-Specific Assessment</h1>
                     <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
-                        Input your target company and job description. SkillSprint will simulate their exact interview patterns (technical rounds, coding questions, and company cultural principles) or generate a tailored multi-week preparation roadmap.
+                        Input your target company and job description to simulate company-specific interview rounds or generate a custom 4-week prep plan.
                     </p>
-
-                    <!-- Why use this feature guide box -->
-                    <div class="mt-3 p-3 rounded-xl bg-blue-500/[0.05] border border-blue-500/20 text-xs text-slate-300 flex items-start gap-2.5">
-                        <i class="fa-solid fa-circle-question text-blue-400 mt-0.5 text-sm shrink-0"></i>
-                        <div>
-                            <strong class="text-blue-300 font-semibold">Why use this feature?</strong>
-                            <span class="text-slate-300">Targeting a specific employer like Google, Microsoft, or an elite startup? Paste their Job Description to simulate their real interview patterns or get an actionable multi-week study roadmap targeting exact skill gaps.</span>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="space-y-5">
@@ -380,23 +343,14 @@
             <div id="atsSetupCard" class="studio-card p-6 sm:p-8 space-y-6">
                 <!-- Tab Header -->
                 <div class="border-b border-white/[0.06] pb-5">
-                    <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 tracking-wider uppercase mb-1">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
+                    <div class="flex items-center gap-2 text-xs font-mono text-purple-400 tracking-wider uppercase mb-1">
+                        <span class="w-2 h-2 rounded-full bg-purple-400 animate-pulse"></span>
                         Module 03 // Precision ATS Scoring & Bullet Enhancer
                     </div>
                     <h1 class="text-xl sm:text-2xl font-bold text-white tracking-tight">Applicant Tracking System (ATS) Diagnostic</h1>
                     <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
-                        Assess keyword density, experience impact metrics, and formatting compliance. Receive Google XYZ formula bullet point rewrites to rank in the top 5% of candidate screens.
+                        Scan your resume against ATS algorithms for keyword match rate, formatting compliance, and Google X-Y-Z bullet enhancements.
                     </p>
-
-                    <!-- Why use this feature guide box -->
-                    <div class="mt-3 p-3 rounded-xl bg-purple-500/[0.05] border border-purple-500/20 text-xs text-slate-300 flex items-start gap-2.5">
-                        <i class="fa-solid fa-circle-question text-purple-400 mt-0.5 text-sm shrink-0"></i>
-                        <div>
-                            <strong class="text-purple-300 font-semibold">Why use this feature?</strong>
-                            <span class="text-slate-300">Over 75% of resumes are filtered out before reaching a human recruiter. Audit your resume against industry ATS algorithms to uncover missing keywords, verify parsing compatibility, and get Google X-Y-Z bullet rewrites to boost your callback rate.</span>
-                        </div>
-                    </div>
                 </div>
 
                 <div class="space-y-5">

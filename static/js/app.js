@@ -510,6 +510,264 @@ async function handleCompanyQuizStart() {
     }
 }
 
+async function handleGenerateRoadmap() {
+    const comp = document.getElementById('targetCompanyName')?.value.trim() || 'Target Enterprise';
+    const targetRole = document.getElementById('targetJobTitle')?.value.trim() || 'Software Engineer';
+    const jd = document.getElementById('targetJobDescription')?.value.trim() || '';
+    const resumeText = app.resume.text || '';
+
+    if (!jd && !resumeText) {
+        showToast('Please provide a Job Description or upload your Resume first to build a roadmap.', 'error');
+        return;
+    }
+
+    const btn = document.getElementById('roadmapStartBtn');
+    const origText = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = `<i class="fa-solid fa-circle-notch fa-spin"></i><span>Generating 4-Week Plan...</span>`;
+    }
+
+    try {
+        const res = await fetch('/api/study-roadmap/generate', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({
+                name: document.getElementById('resumeUserName')?.value || app.user?.name || 'Candidate',
+                company_name: comp,
+                target_role: targetRole,
+                job_description: jd,
+                resume_text: resumeText,
+                timeline_weeks: 4
+            })
+        });
+
+        const data = await res.json();
+        if (res.ok && data.success && data.roadmap) {
+            renderStudyRoadmap(data.roadmap);
+            showToast('4-Week Preparation Blueprint generated successfully!', 'success');
+        } else {
+            showToast(data.error || 'Failed to generate study roadmap.', 'error');
+        }
+    } catch (e) {
+        console.error(e);
+        showToast('Connection error while generating study roadmap.', 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origText;
+        }
+    }
+}
+
+function renderStudyRoadmap(roadmap) {
+    const container = document.getElementById('companyAssessmentOutput');
+    if (!container) return;
+
+    container.classList.remove('hidden');
+
+    const comp = roadmap.target_company || 'Target Enterprise';
+    const title = roadmap.roadmap_title || `${comp} Preparation Blueprint`;
+    const summary = roadmap.executive_summary || '';
+
+    // Gap Analysis Rows
+    let gapHtml = '';
+    (roadmap.gap_analysis || []).forEach(gap => {
+        const isHigh = (gap.priority || '').toLowerCase().includes('high');
+        const priBadge = isHigh
+            ? `<span class="px-2 py-0.5 rounded bg-rose-500/10 text-rose-300 border border-rose-500/25 font-mono text-[10px]">High Priority Gap</span>`
+            : `<span class="px-2 py-0.5 rounded bg-amber-500/10 text-amber-300 border border-amber-500/25 font-mono text-[10px]">Medium Priority</span>`;
+
+        gapHtml += `
+            <div class="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-2 text-xs">
+                <div class="flex items-center justify-between gap-2">
+                    <span class="font-bold text-white text-xs">${escapeHtml(gap.skill || '')}</span>
+                    ${priBadge}
+                </div>
+                <div class="grid grid-cols-1 sm:grid-cols-2 gap-2 text-[11px] pt-1">
+                    <div class="p-2.5 rounded-lg bg-black/30 border border-white/[0.05]">
+                        <span class="text-slate-400 block font-mono text-[10px] uppercase mb-0.5"><i class="fa-solid fa-briefcase text-blue-400 mr-1"></i> Job Requirement:</span>
+                        <span class="text-slate-200">${escapeHtml(gap.jd_requirement || 'Not specified')}</span>
+                    </div>
+                    <div class="p-2.5 rounded-lg bg-black/30 border border-white/[0.05]">
+                        <span class="text-slate-400 block font-mono text-[10px] uppercase mb-0.5"><i class="fa-solid fa-user-check text-emerald-400 mr-1"></i> Current Candidate Status:</span>
+                        <span class="text-slate-300">${escapeHtml(gap.candidate_status || 'Need reinforcement')}</span>
+                    </div>
+                </div>
+            </div>
+        `;
+    });
+
+    // Weekly Modules
+    let weeklyHtml = '';
+    (roadmap.weekly_modules || []).forEach(week => {
+        const objectives = (week.learning_objectives || []).map(obj => `
+            <li class="flex items-start gap-2">
+                <i class="fa-solid fa-circle-check text-emerald-400 text-[11px] mt-0.5 shrink-0"></i>
+                <span class="text-slate-300">${escapeHtml(obj)}</span>
+            </li>
+        `).join('');
+
+        const topics = (week.must_study_topics || []).map(topic => `
+            <span class="px-2.5 py-1 rounded-lg bg-white/[0.03] text-slate-200 border border-white/[0.08] font-mono text-[11px]">${escapeHtml(topic)}</span>
+        `).join('');
+
+        const questions = (week.mock_interview_questions || []).map(q => `
+            <div class="p-2.5 rounded-lg bg-black/30 border border-blue-500/20 text-slate-200 text-xs flex items-start gap-2">
+                <i class="fa-solid fa-question text-blue-400 mt-0.5 text-[11px] shrink-0"></i>
+                <span>${escapeHtml(q)}</span>
+            </div>
+        `).join('');
+
+        weeklyHtml += `
+            <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-4">
+                <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-2 border-b border-white/[0.06] pb-3">
+                    <div class="flex items-center gap-2.5">
+                        <span class="w-7 h-7 rounded-lg bg-amber-500/10 border border-amber-500/30 text-amber-400 font-mono font-bold flex items-center justify-center text-xs">
+                            W${week.week_number}
+                        </span>
+                        <div>
+                            <div class="text-[10px] font-mono text-amber-400 uppercase tracking-wider">Week 0${week.week_number} Blueprint</div>
+                            <h3 class="text-sm font-bold text-white">${escapeHtml(week.theme || '')}</h3>
+                        </div>
+                    </div>
+                    <span class="text-[11px] font-mono text-slate-400 px-2.5 py-1 rounded bg-white/[0.02] border border-white/[0.06] self-start sm:self-center">
+                        ${escapeHtml(comp)} Focus
+                    </span>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Core Learning Objectives:</div>
+                    <ul class="space-y-1.5 text-xs">
+                        ${objectives}
+                    </ul>
+                </div>
+
+                <div class="space-y-2">
+                    <div class="text-[11px] font-mono uppercase tracking-wider text-slate-400 font-semibold">Must-Study Topics:</div>
+                    <div class="flex flex-wrap gap-1.5">
+                        ${topics}
+                    </div>
+                </div>
+
+                ${week.recommended_practice ? `
+                    <div class="p-3 rounded-xl bg-amber-500/[0.05] border border-amber-500/20 text-xs text-slate-200">
+                        <strong class="text-amber-300 block mb-0.5 font-mono text-[11px]"><i class="fa-solid fa-laptop-code mr-1"></i> Recommended Hands-On Exercise:</strong>
+                        <span>${escapeHtml(week.recommended_practice)}</span>
+                    </div>
+                ` : ''}
+
+                ${questions ? `
+                    <div class="space-y-2 pt-1">
+                        <div class="text-[11px] font-mono uppercase tracking-wider text-blue-400 font-semibold">Predicted ${escapeHtml(comp)} Technical Questions:</div>
+                        <div class="space-y-2">
+                            ${questions}
+                        </div>
+                    </div>
+                ` : ''}
+            </div>
+        `;
+    });
+
+    // Interview Secrets & Resume Tweaks
+    const secretsHtml = (roadmap.company_interview_secrets || []).map(s => `
+        <li class="flex items-start gap-2">
+            <i class="fa-solid fa-lightbulb text-amber-400 text-xs mt-0.5 shrink-0"></i>
+            <span class="text-slate-300 text-xs">${escapeHtml(s)}</span>
+        </li>
+    `).join('');
+
+    const tweaksHtml = (roadmap.recommended_resume_tweaks || []).map(t => `
+        <li class="flex items-start gap-2">
+            <i class="fa-solid fa-file-signature text-emerald-400 text-xs mt-0.5 shrink-0"></i>
+            <span class="text-slate-300 text-xs">${escapeHtml(t)}</span>
+        </li>
+    `).join('');
+
+    container.innerHTML = `
+        <div class="studio-card p-6 sm:p-8 space-y-6">
+            <!-- Header Banner -->
+            <div class="flex flex-col sm:flex-row sm:items-center justify-between gap-4 border-b border-white/[0.06] pb-5">
+                <div>
+                    <div class="flex items-center gap-2 text-xs font-mono text-amber-400 tracking-wider uppercase mb-1">
+                        <i class="fa-solid fa-route"></i> Custom 4-Week Prep Blueprint
+                    </div>
+                    <h2 class="text-xl font-bold text-white tracking-tight">${escapeHtml(title)}</h2>
+                    <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">${escapeHtml(summary)}</p>
+                </div>
+                <button type="button" onclick="handleCompanyQuizStart()" 
+                    class="btn-primary-action text-xs whitespace-nowrap self-start sm:self-center py-2.5 px-4">
+                    <i class="fa-solid fa-play text-[10px]"></i>
+                    <span>Simulate Interview Now</span>
+                </button>
+            </div>
+
+            <!-- Gap Analysis Section -->
+            ${gapHtml ? `
+                <div class="space-y-3">
+                    <div class="flex items-center justify-between">
+                        <h3 class="text-xs font-mono font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                            <i class="fa-solid fa-chart-pie text-rose-400"></i> Skill Gap Analysis vs Job Requirements
+                        </h3>
+                    </div>
+                    <div class="space-y-2.5">
+                        ${gapHtml}
+                    </div>
+                </div>
+            ` : ''}
+
+            <!-- Weekly Modules Section -->
+            <div class="space-y-4">
+                <h3 class="text-xs font-mono font-bold text-white uppercase tracking-wider flex items-center gap-2">
+                    <i class="fa-solid fa-calendar-days text-amber-400"></i> 4-Week Step-by-Step Curriculum
+                </h3>
+                <div class="space-y-4">
+                    ${weeklyHtml}
+                </div>
+            </div>
+
+            <!-- Secrets & Resume Tweaks Grid -->
+            <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 pt-2">
+                ${secretsHtml ? `
+                    <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-3">
+                        <h4 class="text-xs font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+                            <i class="fa-solid fa-user-secret text-amber-400"></i> ${escapeHtml(comp)} Interview Rubric Secrets
+                        </h4>
+                        <ul class="space-y-2">
+                            ${secretsHtml}
+                        </ul>
+                    </div>
+                ` : ''}
+
+                ${tweaksHtml ? `
+                    <div class="p-5 rounded-2xl bg-white/[0.02] border border-white/[0.06] space-y-3">
+                        <h4 class="text-xs font-bold text-white uppercase tracking-wider font-mono flex items-center gap-2">
+                            <i class="fa-solid fa-file-signature text-emerald-400"></i> Recommended Resume Tweaks
+                        </h4>
+                        <ul class="space-y-2">
+                            ${tweaksHtml}
+                        </ul>
+                    </div>
+                ` : ''}
+            </div>
+
+            <!-- Bottom Action Row -->
+            <div class="flex items-center justify-between pt-4 border-t border-white/[0.06]">
+                <button type="button" onclick="document.getElementById('companyAssessmentOutput').classList.add('hidden'); window.scrollTo({top: 0, behavior: 'smooth'});" 
+                    class="text-xs text-slate-400 hover:text-white font-mono flex items-center gap-1.5 transition">
+                    <i class="fa-solid fa-arrow-up"></i> Back to Top Configurator
+                </button>
+                <button type="button" onclick="window.print()" 
+                    class="text-xs px-3.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 hover:text-white transition flex items-center gap-1.5 font-mono">
+                    <i class="fa-solid fa-print"></i> Print / Save PDF
+                </button>
+            </div>
+        </div>
+    `;
+
+    container.scrollIntoView({ behavior: 'smooth', block: 'start' });
+}
+
 // ==========================================
 // MULTI-MODAL ASSESSMENT ARENA ENGINE
 // ==========================================

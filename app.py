@@ -247,6 +247,89 @@ def login():
         db.close()
 
 
+@app.route("/api/auth/forgot-password", methods=["POST"])
+def forgot_password():
+    """Send a password reset OTP to the user's email."""
+    db = SessionLocal()
+    try:
+        data = request.get_json(force=True) or {}
+        email = data.get("email", "").strip().lower()
+
+        if not email:
+            return jsonify({"error": "Email address is required."}), 400
+
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            return jsonify({"error": "No account found with this email address."}), 404
+
+        otp = generate_otp()
+        user.otp_code = otp
+        user.otp_created_at = datetime.now(timezone.utc)
+        db.commit()
+
+        success, msg, extra = send_otp_email(email, user.name, otp, purpose="Password Reset")
+        return jsonify({
+            "success": True,
+            "message": f"A 6-digit password reset code has been sent to {email}.",
+            "email": email,
+            "extra": extra
+        })
+    except Exception as e:
+        db.rollback()
+        traceback.print_exc()
+        return jsonify({"error": f"Password reset request failed: {str(e)}"}), 500
+    finally:
+        db.close()
+
+
+@app.route("/api/auth/reset-password", methods=["POST"])
+def reset_password():
+    """Verify OTP and update user's password."""
+    db = SessionLocal()
+    try:
+        data = request.get_json(force=True) or {}
+        email = data.get("email", "").strip().lower()
+        otp = data.get("otp", "").strip()
+        new_password = data.get("new_password", "").strip()
+
+        if not email or not otp or not new_password:
+            return jsonify({"error": "Email, verification code, and new password are required."}), 400
+
+        if len(new_password) < 6:
+            return jsonify({"error": "New password must be at least 6 characters long."}), 400
+
+        user = db.query(User).filter(User.email == email).first()
+        if not user:
+            return jsonify({"error": "User account not found."}), 404
+
+        if user.otp_code != otp:
+            return jsonify({"error": "Invalid verification code. Please check your email and try again."}), 400
+
+        # Update password
+        user.password_hash = generate_password_hash(new_password)
+        user.is_verified = True
+        user.otp_code = None
+        db.commit()
+
+        # Log into session
+        session.permanent = True
+        session["user_id"] = user.id
+        session["user_email"] = user.email
+        session["user_name"] = user.name
+
+        return jsonify({
+            "success": True,
+            "message": "Password updated successfully! You are now signed in.",
+            "user": user.to_dict()
+        })
+    except Exception as e:
+        db.rollback()
+        traceback.print_exc()
+        return jsonify({"error": f"Password reset failed: {str(e)}"}), 500
+    finally:
+        db.close()
+
+
 @app.route("/api/auth/me", methods=["GET"])
 def get_current_user():
     """Retrieve logged-in user details."""

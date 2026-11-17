@@ -9,3 +9,4 @@ uploads/*
 !uploads/.gitkeep
 .system_generated/
 cloudflared.exe
+*.db

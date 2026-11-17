@@ -1823,32 +1823,44 @@ function closeAuthModal() {
 }
 
 function openSetupGuideModal() {
-    document.getElementById('setupGuideModal').classList.remove('hidden');
+    const el = document.getElementById('setupGuideModal');
+    if (el) el.classList.remove('hidden');
 }
 
 function closeSetupGuideModal() {
-    document.getElementById('setupGuideModal').classList.add('hidden');
+    const el = document.getElementById('setupGuideModal');
+    if (el) el.classList.add('hidden');
 }
 
 function toggleAuthForm(mode) {
     const loginForm = document.getElementById('loginForm');
     const registerForm = document.getElementById('registerForm');
     const otpForm = document.getElementById('otpVerifyForm');
+    const forgotForm = document.getElementById('forgotPasswordForm');
+    const resetForm = document.getElementById('resetPasswordForm');
     const title = document.getElementById('authModalTitle');
 
-    loginForm.classList.add('hidden');
-    registerForm.classList.add('hidden');
-    otpForm.classList.add('hidden');
+    if (loginForm) loginForm.classList.add('hidden');
+    if (registerForm) registerForm.classList.add('hidden');
+    if (otpForm) otpForm.classList.add('hidden');
+    if (forgotForm) forgotForm.classList.add('hidden');
+    if (resetForm) resetForm.classList.add('hidden');
 
     if (mode === 'login') {
-        loginForm.classList.remove('hidden');
-        title.textContent = 'Sign In to SkillSprint Studio';
+        if (loginForm) loginForm.classList.remove('hidden');
+        if (title) title.textContent = 'Sign In to SkillSprint Studio';
     } else if (mode === 'register') {
-        registerForm.classList.remove('hidden');
-        title.textContent = 'Create New Candidate Account';
+        if (registerForm) registerForm.classList.remove('hidden');
+        if (title) title.textContent = 'Create New Candidate Account';
     } else if (mode === 'otp') {
-        otpForm.classList.remove('hidden');
-        title.textContent = 'Verify Email Address';
+        if (otpForm) otpForm.classList.remove('hidden');
+        if (title) title.textContent = 'Verify Email Address';
+    } else if (mode === 'forgot') {
+        if (forgotForm) forgotForm.classList.remove('hidden');
+        if (title) title.textContent = 'Reset Forgotten Password';
+    } else if (mode === 'reset') {
+        if (resetForm) resetForm.classList.remove('hidden');
+        if (title) title.textContent = 'Set New Password';
     }
 }
 
@@ -1932,6 +1944,93 @@ async function handleOtpSubmit(event) {
         }
     } catch (e) {
         showToast('Server connection error during OTP verification.', 'error');
+    }
+}
+
+async function handleForgotPasswordSubmit(event) {
+    event.preventDefault();
+    const email = document.getElementById('forgotEmail').value.trim();
+    const btn = document.getElementById('forgotSubmitBtn');
+
+    if (!email) {
+        showToast('Please enter your email address.', 'error');
+        return;
+    }
+
+    const origText = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Sending Code...';
+    }
+
+    try {
+        const res = await fetch('/api/auth/forgot-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            document.getElementById('resetTargetEmailDisplay').textContent = email;
+            toggleAuthForm('reset');
+            showToast(data.message || 'Verification code sent to your email.', 'success');
+        } else {
+            showToast(data.error || 'Failed to send password reset code.', 'error');
+        }
+    } catch (e) {
+        showToast('Network error while requesting password reset.', 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origText;
+        }
+    }
+}
+
+async function handleResetPasswordSubmit(event) {
+    event.preventDefault();
+    const email = document.getElementById('resetTargetEmailDisplay').textContent.trim() || document.getElementById('forgotEmail').value.trim();
+    const otp = document.getElementById('resetOtpInput').value.trim();
+    const new_password = document.getElementById('resetNewPassword').value.trim();
+    const btn = document.getElementById('resetSubmitBtn');
+
+    if (!email || !otp || !new_password) {
+        showToast('Please enter both the reset code and your new password.', 'error');
+        return;
+    }
+
+    if (new_password.length < 6) {
+        showToast('New password must be at least 6 characters.', 'error');
+        return;
+    }
+
+    const origText = btn ? btn.innerHTML : '';
+    if (btn) {
+        btn.disabled = true;
+        btn.innerHTML = '<i class="fa-solid fa-spinner fa-spin mr-1"></i> Resetting Password...';
+    }
+
+    try {
+        const res = await fetch('/api/auth/reset-password', {
+            method: 'POST',
+            headers: { 'Content-Type': 'application/json' },
+            body: JSON.stringify({ email, otp, new_password })
+        });
+        const data = await res.json();
+        if (res.ok && data.success) {
+            closeAuthModal();
+            await checkCurrentUser();
+            showToast(data.message || 'Password reset successfully! Welcome back.', 'success');
+        } else {
+            showToast(data.error || 'Password reset failed. Please check your verification code.', 'error');
+        }
+    } catch (e) {
+        showToast('Network error while resetting password.', 'error');
+    } finally {
+        if (btn) {
+            btn.disabled = false;
+            btn.innerHTML = origText;
+        }
     }
 }
 

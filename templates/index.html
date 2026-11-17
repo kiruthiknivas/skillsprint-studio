@@ -75,13 +75,6 @@
                     <span class="hidden sm:inline">Admin DB</span>
                 </button>
 
-                <!-- Cloud & Email Setup Guide -->
-                <button type="button" onclick="openSetupGuideModal()" 
-                    class="text-xs px-2.5 py-1.5 rounded-xl bg-white/[0.04] hover:bg-white/[0.08] border border-white/[0.08] text-slate-300 hover:text-white transition flex items-center gap-1.5 font-medium">
-                    <i class="fa-solid fa-sliders text-slate-400 text-[11px]"></i>
-                    <span class="hidden sm:inline">Setup Guide</span>
-                </button>
-
                 <!-- User Account / Auth Profile -->
                 <div id="authHeaderControl">
                     <button type="button" onclick="openAuthModal('login')" 
@@ -110,6 +103,25 @@
     <!-- Main Studio Workspace Container -->
     <main class="flex-1 max-w-5xl w-full mx-auto px-4 py-6 sm:py-8">
 
+        <!-- Platform Orientation Banner for New Users -->
+        <div class="mb-6 p-4 sm:p-5 rounded-2xl bg-gradient-to-r from-emerald-500/[0.08] via-cyan-500/[0.04] to-transparent border border-white/[0.08] relative overflow-hidden">
+            <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-3">
+                <div>
+                    <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 font-bold uppercase tracking-wider mb-1">
+                        <i class="fa-solid fa-graduation-cap"></i> SkillSprint Studio — AI Interview & Career Operating System
+                    </div>
+                    <p class="text-xs text-slate-300 leading-relaxed max-w-3xl">
+                        Master technical hiring with 3 specialized tools: <strong>(1) Resume Hub</strong> simulates custom technical MCQs, coding challenges, and STAR behavioral answers; <strong>(2) Target JD</strong> tailors interview loops to specific company job postings; and <strong>(3) ATS Audit</strong> scans your resume against corporate filtering bots with Google X-Y-Z formula rewrites.
+                    </p>
+                </div>
+                <div class="flex items-center gap-2 whitespace-nowrap">
+                    <span class="text-[11px] font-mono text-slate-400 px-3 py-1 rounded-full bg-black/40 border border-white/[0.06]">
+                        <i class="fa-solid fa-bolt text-emerald-400 mr-1"></i> Free Open Platform
+                    </span>
+                </div>
+            </div>
+        </div>
+
         <!-- ======================================================== -->
         <!-- TAB 1: RESUME INTERVIEW (MCQ + CODING + BEHAVIORAL)      -->
         <!-- ======================================================== -->
@@ -117,7 +129,7 @@
             <!-- Setup Form Card (Hidden during active session) -->
             <div id="resumeQuizSetupCard" class="studio-card p-6 sm:p-8 space-y-6">
                 <!-- Tab Header -->
-                <div class="border-b border-white/[0.06] pb-5">
+                <div class="border-b border-white/[0.06] pb-5 space-y-3">
                     <div class="flex items-center gap-2 text-xs font-mono text-emerald-400 tracking-wider uppercase mb-1">
                         <span class="w-2 h-2 rounded-full bg-emerald-400 animate-pulse"></span>
                         Module 01 // Adaptive Technical & Behavioral Simulation
@@ -126,6 +138,15 @@
                     <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
                         Upload your resume to generate a personalized evaluation combining technical architecture gotchas (.NET, Angular, SQL), hands-on coding challenges, and hiring fit questions with real-time AI coaching.
                     </p>
+                    
+                    <!-- Why use this feature guide box -->
+                    <div class="p-3 rounded-xl bg-emerald-500/[0.05] border border-emerald-500/20 text-xs text-slate-300 flex items-start gap-2.5">
+                        <i class="fa-solid fa-circle-question text-emerald-400 mt-0.5 text-sm shrink-0"></i>
+                        <div>
+                            <strong class="text-emerald-300 font-semibold">Why use this feature?</strong>
+                            <span class="text-slate-300">Upload your resume to receive a personalized, dynamic interview simulation. Learn immediately with on-the-spot conceptual explanations for every question, test your logic in a live coding sandbox with hidden edge cases, and refine your leadership stories using the STAR metric framework.</span>
+                        </div>
+                    </div>
                 </div>
 
                 <form onsubmit="handleResumeQuizStart(event)" class="space-y-6">
@@ -274,6 +295,15 @@
                     <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
                         Input your target company and job description. SkillSprint will simulate their exact interview patterns (technical rounds, coding questions, and company cultural principles) or generate a tailored multi-week preparation roadmap.
                     </p>
+
+                    <!-- Why use this feature guide box -->
+                    <div class="mt-3 p-3 rounded-xl bg-blue-500/[0.05] border border-blue-500/20 text-xs text-slate-300 flex items-start gap-2.5">
+                        <i class="fa-solid fa-circle-question text-blue-400 mt-0.5 text-sm shrink-0"></i>
+                        <div>
+                            <strong class="text-blue-300 font-semibold">Why use this feature?</strong>
+                            <span class="text-slate-300">Targeting a specific employer like Google, Microsoft, or an elite startup? Paste their Job Description to simulate their real interview patterns or get an actionable multi-week study roadmap targeting exact skill gaps.</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="space-y-5">
@@ -358,6 +388,15 @@
                     <p class="text-xs text-slate-400 mt-1 max-w-2xl leading-relaxed">
                         Assess keyword density, experience impact metrics, and formatting compliance. Receive Google XYZ formula bullet point rewrites to rank in the top 5% of candidate screens.
                     </p>
+
+                    <!-- Why use this feature guide box -->
+                    <div class="mt-3 p-3 rounded-xl bg-purple-500/[0.05] border border-purple-500/20 text-xs text-slate-300 flex items-start gap-2.5">
+                        <i class="fa-solid fa-circle-question text-purple-400 mt-0.5 text-sm shrink-0"></i>
+                        <div>
+                            <strong class="text-purple-300 font-semibold">Why use this feature?</strong>
+                            <span class="text-slate-300">Over 75% of resumes are filtered out before reaching a human recruiter. Audit your resume against industry ATS algorithms to uncover missing keywords, verify parsing compatibility, and get Google X-Y-Z bullet rewrites to boost your callback rate.</span>
+                        </div>
+                    </div>
                 </div>
 
                 <div class="space-y-5">
@@ -473,61 +512,6 @@
     </div>
 
     <!-- ======================================================== -->
-    <!-- SETUP GUIDE MODAL (SUPABASE POSTGRESQL & GMAIL SMTP)    -->
-    <!-- ======================================================== -->
-    <div id="setupGuideModal" class="fixed inset-0 z-50 hidden studio-modal-backdrop flex items-center justify-center p-4">
-        <div class="studio-modal-panel w-full max-w-2xl max-h-[90vh] flex flex-col p-6 space-y-5 animate-scaleUp">
-            <div class="flex items-center justify-between border-b border-white/[0.08] pb-4">
-                <div class="flex items-center gap-2.5">
-                    <div class="w-8 h-8 rounded-lg bg-emerald-500/10 border border-emerald-500/30 flex items-center justify-center text-emerald-400">
-                        <i class="fa-solid fa-sliders text-xs"></i>
-                    </div>
-                    <div>
-                        <h2 class="text-base font-bold text-white tracking-tight">Production Infrastructure Guide</h2>
-                        <div class="text-[11px] font-mono text-slate-400">Free Open-Source Cloud DB & Gmail SMTP Setup</div>
-                    </div>
-                </div>
-                <button type="button" onclick="closeSetupGuideModal()" class="w-8 h-8 rounded-lg bg-white/[0.04] text-slate-400 hover:text-white flex items-center justify-center">
-                    <i class="fa-solid fa-xmark text-sm"></i>
-                </button>
-            </div>
-
-            <div class="flex-1 overflow-y-auto space-y-4 text-xs text-slate-300 leading-relaxed font-sans">
-                <!-- Supabase Card -->
-                <div class="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-2">
-                    <div class="font-bold text-white text-sm flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-emerald-400"></span>
-                        1. Free Cloud Database (Supabase PostgreSQL)
-                    </div>
-                    <p class="text-slate-400">
-                        Your application is currently connected live to your <strong>Supabase Tokyo PostgreSQL instance</strong>:
-                    </p>
-                    <div class="p-2.5 rounded-lg bg-[#090c15] border border-white/[0.06] font-mono text-[11px] text-emerald-300 break-all">
-                        aws-1-ap-northeast-1.pooler.supabase.com:6543/postgres
-                    </div>
-                    <p class="text-slate-400 text-[11px]">
-                        All candidate registrations, quiz scores, and ATS audits are stored permanently with automatic backups.
-                    </p>
-                </div>
-
-                <!-- Gmail SMTP Card -->
-                <div class="p-4 rounded-xl bg-white/[0.02] border border-white/[0.06] space-y-2">
-                    <div class="font-bold text-white text-sm flex items-center gap-2">
-                        <span class="w-2 h-2 rounded-full bg-blue-400"></span>
-                        2. Live Email Dispatch (Gmail SMTP)
-                    </div>
-                    <p class="text-slate-400">
-                        Verified active with <strong>kiruthiknivasnkl@gmail.com</strong>.
-                    </p>
-                    <p class="text-slate-400 text-[11px]">
-                        Whenever users register, real 6-digit OTP codes are dispatched directly to their personal inbox with responsive HTML formatting.
-                    </p>
-                </div>
-            </div>
-        </div>
-    </div>
-
-    <!-- ======================================================== -->
     <!-- AUTHENTICATION & OTP MODAL                               -->
     <!-- ======================================================== -->
     <div id="authModal" class="fixed inset-0 z-50 hidden studio-modal-backdrop flex items-center justify-center p-4">
@@ -550,7 +534,10 @@
                         class="w-full px-3.5 py-2.5 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
                 </div>
                 <div>
-                    <label class="block text-xs font-medium text-slate-300 mb-1">Password</label>
+                    <div class="flex items-center justify-between mb-1">
+                        <label class="block text-xs font-medium text-slate-300">Password</label>
+                        <button type="button" onclick="toggleAuthForm('forgot')" class="text-[11px] text-emerald-400 hover:underline font-mono">Forgot password?</button>
+                    </div>
                     <input type="password" id="loginPassword" required placeholder="••••••••"
                         class="w-full px-3.5 py-2.5 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
                 </div>
@@ -597,6 +584,51 @@
                         class="w-full text-center text-2xl tracking-[8px] font-mono py-2.5 rounded-xl bg-[#090c15] border border-white/[0.12] text-white focus:outline-none focus:border-emerald-500 transition">
                 </div>
                 <button type="submit" class="btn-primary-action w-full py-2.5">Verify Account & Proceed</button>
+            </form>
+
+            <!-- Step 4: Forgot Password Request Form -->
+            <form id="forgotPasswordForm" onsubmit="handleForgotPasswordSubmit(event)" class="hidden space-y-4">
+                <div class="text-center">
+                    <div class="w-10 h-10 mx-auto rounded-xl bg-amber-500/10 text-amber-400 flex items-center justify-center text-base mb-2">
+                        <i class="fa-solid fa-key"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-white">Reset Forgotten Password</h3>
+                    <p class="text-xs text-slate-400 mt-1">Enter your registered email address and we will send you a 6-digit verification code to securely reset your password.</p>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">Account Email Address</label>
+                    <input type="email" id="forgotEmail" required placeholder="your.email@example.com"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+                </div>
+                <button type="submit" id="forgotSubmitBtn" class="btn-primary-action w-full py-2.5">Send Reset Code</button>
+                <div class="text-center text-xs text-slate-400 pt-1">
+                    Remember your password? <a href="#" onclick="toggleAuthForm('login')" class="text-emerald-400 hover:underline font-semibold">Back to Sign In</a>
+                </div>
+            </form>
+
+            <!-- Step 5: Reset Password Form -->
+            <form id="resetPasswordForm" onsubmit="handleResetPasswordSubmit(event)" class="hidden space-y-4">
+                <div class="text-center">
+                    <div class="w-10 h-10 mx-auto rounded-xl bg-emerald-500/10 text-emerald-400 flex items-center justify-center text-base mb-2">
+                        <i class="fa-solid fa-shield-check"></i>
+                    </div>
+                    <h3 class="text-sm font-bold text-white">Enter Reset Code & New Password</h3>
+                    <p class="text-xs text-slate-400 mt-1">We sent a 6-digit reset code to <span id="resetTargetEmailDisplay" class="text-emerald-300 font-mono"></span></p>
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">6-Digit Reset Code</label>
+                    <input type="text" id="resetOtpInput" maxlength="6" required placeholder="123456"
+                        class="w-full text-center text-2xl tracking-[8px] font-mono py-2.5 rounded-xl bg-[#090c15] border border-white/[0.12] text-white focus:outline-none focus:border-emerald-500 transition">
+                </div>
+                <div>
+                    <label class="block text-xs font-medium text-slate-300 mb-1">New Password (minimum 6 characters)</label>
+                    <input type="password" id="resetNewPassword" required minlength="6" placeholder="••••••••"
+                        class="w-full px-3.5 py-2.5 rounded-xl bg-[#090c15] border border-white/[0.08] text-xs text-white placeholder-slate-600 focus:outline-none focus:border-emerald-500 transition">
+                </div>
+                <button type="submit" id="resetSubmitBtn" class="btn-primary-action w-full py-2.5">Reset Password & Sign In</button>
+                <div class="text-center text-xs text-slate-400 pt-1">
+                    Didn't receive code? <a href="#" onclick="toggleAuthForm('forgot')" class="text-emerald-400 hover:underline font-semibold">Resend Code</a>
+                </div>
             </form>
         </div>
     </div>

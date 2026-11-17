@@ -12,7 +12,7 @@ def generate_otp() -> str:
     """Generate a random 6-digit numeric verification OTP."""
     return f"{random.randint(100000, 999999)}"
 
-def send_otp_email(recipient_email: str, recipient_name: str, otp_code: str) -> Tuple[bool, str, Dict[str, Any]]:
+def send_otp_email(recipient_email: str, recipient_name: str, otp_code: str, purpose: str = "Account Verification") -> Tuple[bool, str, Dict[str, Any]]:
     """
     Send OTP code via SMTP if configured, or return dev mode instructions.
     Returns (success, message, extra_info).
@@ -21,7 +21,12 @@ def send_otp_email(recipient_email: str, recipient_name: str, otp_code: str) -> 
     smtp_port = int(os.environ.get("SMTP_PORT", 587))
     smtp_user = os.environ.get("SMTP_EMAIL", "").strip()
     smtp_password = os.environ.get("SMTP_PASSWORD", "").strip()
-    
+
+    is_pwd_reset = "password" in purpose.lower()
+    subject = f"Your SkillSprint Password Reset Code: {otp_code}" if is_pwd_reset else f"Your SkillSprint Verification Code: {otp_code}"
+    heading = "Reset Your Password" if is_pwd_reset else "Verify your email address"
+    body_msg = "We received a request to reset your password. Use the verification code below to set a new password:" if is_pwd_reset else "Welcome to SkillSprint! Use the one-time verification code below to verify your account and begin your technical interview preparation:"
+
     html_content = f"""
     <!DOCTYPE html>
     <html>
@@ -37,14 +42,14 @@ def send_otp_email(recipient_email: str, recipient_name: str, otp_code: str) -> 
     </head>
     <body>
         <div class="container">
-            <div class="logo">⚡ SkillSprint AI</div>
-            <h2 style="color: #ffffff; margin-top: 0;">Verify your email address</h2>
+            <div class="logo">⚡ SkillSprint Studio</div>
+            <h2 style="color: #ffffff; margin-top: 0;">{heading}</h2>
             <p style="color: #94a3b8; font-size: 14px; line-height: 1.5;">Hello <strong>{recipient_name}</strong>,</p>
-            <p style="color: #94a3b8; font-size: 14px; line-height: 1.5;">Welcome to SkillSprint AI! Use the one-time verification code below to verify your account and begin your technical interview preparation:</p>
+            <p style="color: #94a3b8; font-size: 14px; line-height: 1.5;">{body_msg}</p>
             <div class="otp-box">{otp_code}</div>
-            <p style="color: #64748b; font-size: 12px;">This code expires in 15 minutes. If you did not request this verification, please disregard this email.</p>
+            <p style="color: #64748b; font-size: 12px;">This code expires in 15 minutes. If you did not request this code, please disregard this email.</p>
             <div class="footer">
-                SkillSprint AI • Dynamic Interview Preparation & Career Accelerator
+                SkillSprint Studio • AI Interview & Technical Career OS
             </div>
         </div>
     </body>
@@ -55,8 +60,8 @@ def send_otp_email(recipient_email: str, recipient_name: str, otp_code: str) -> 
     if smtp_server and smtp_user and smtp_password:
         try:
             msg = MIMEMultipart("alternative")
-            msg["Subject"] = f"Your SkillSprint AI Verification Code: {otp_code}"
-            msg["From"] = f"SkillSprint AI <{smtp_user}>"
+            msg["Subject"] = subject
+            msg["From"] = f"SkillSprint Studio <{smtp_user}>"
             msg["To"] = recipient_email
             
             part_text = MIMEText(f"Hello {recipient_name},\n\nYour verification code is: {otp_code}\n\nValid for 15 minutes.", "plain")
